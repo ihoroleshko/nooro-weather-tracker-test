@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Weather Tracker</string>
+    <string name="search_location">Search Location</string>
 </resources>

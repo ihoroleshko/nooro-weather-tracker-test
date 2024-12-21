@@ -8,7 +8,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.test.nooro.weathertracker.ui.navigation.WeatherTrackerNavHost
-import com.test.nooro.weathertracker.ui.theme.WeatherTrackerTheme
 
 class WeatherTrackerActivity : ComponentActivity() {
 
@@ -21,10 +20,8 @@ class WeatherTrackerActivity : ComponentActivity() {
 
     @Composable
     private fun UI() {
-        WeatherTrackerTheme {
-            Surface(modifier = Modifier.fillMaxSize()) {
-                WeatherTrackerNavHost()
-            }
+        Surface(modifier = Modifier.fillMaxSize()) {
+            WeatherTrackerNavHost()
         }
     }
 }
