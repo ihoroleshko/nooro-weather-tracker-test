@@ -29,9 +29,12 @@ import com.test.nooro.weathertracker.R
 import com.test.nooro.weathertracker.ui.theme.Black
 import com.test.nooro.weathertracker.ui.theme.Gray
 import com.test.nooro.weathertracker.ui.theme.Teal
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Home() {
+fun Home(
+    viewModel: HomeViewModel = koinViewModel()
+) {
     var city by rememberSaveable { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -50,6 +53,7 @@ fun Home() {
             value = city,
             onValueChange = {
                 city = it
+                viewModel.getWeather(it)
             },
             placeholder = {
                 Text(
@@ -66,6 +70,8 @@ fun Home() {
                     tint = Gray
                 )
             })
+        when(viewModel.weather) {
+        }
         NoCitySelected()
     }
 }
