@@ -2,6 +2,8 @@ package com.test.nooro.weathertracker.di
 
 import com.test.nooro.data.mapper.WeatherMapper
 import com.test.nooro.domain.core.ConfigProvider
+import com.test.nooro.domain.usecase.CacheWeatherUseCase
+import com.test.nooro.domain.usecase.GetCachedWeatherUseCase
 import com.test.nooro.domain.usecase.WeatherUseCase
 import com.test.nooro.weathertracker.data.ConfigProviderImpl
 import com.test.nooro.weathertracker.ui.screens.home.HomeViewModel
@@ -15,6 +17,8 @@ val appModule = module {
 
     singleOf(::ConfigProviderImpl) { bind<ConfigProvider>() }
     singleOf(::WeatherUseCase)
+    singleOf(::GetCachedWeatherUseCase)
+    singleOf(::CacheWeatherUseCase)
 
     factoryOf(::WeatherMapper)
 

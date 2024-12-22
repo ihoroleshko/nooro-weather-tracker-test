@@ -1,8 +1,8 @@
 package com.test.nooro.data.repository
 
+import com.test.nooro.data.datasource.LocalWeatherDataSource
+import com.test.nooro.data.datasource.RemoteWeatherDataSource
 import com.test.nooro.data.mapper.WeatherMapper
-import com.test.nooro.data.network.Api
-import com.test.nooro.domain.core.ConfigProvider
 import com.test.nooro.domain.core.WeatherRepository
 import com.test.nooro.domain.model.DataState
 import com.test.nooro.domain.model.Weather
@@ -13,15 +13,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class WeatherRepositoryImpl(
-    private val api: Api,
-    private val configProvider: ConfigProvider,
-    private val mapper: WeatherMapper
+    private val mapper: WeatherMapper,
+    private val remoteDataSource: RemoteWeatherDataSource,
+    private val localDataSource: LocalWeatherDataSource,
 ) : WeatherRepository {
 
     override suspend fun getWeather(city: String): Flow<DataState<Weather>> = flow {
         emit(DataState.Loading())
 
-        val response = api.getWeather(city, configProvider.getApiKey())
+        val response = remoteDataSource.getWeather(city)
         val body = response.body()
         if (response.isSuccessful && body != null) {
             emit(DataState.Success(mapper.toEntity(body)))
@@ -31,4 +31,12 @@ class WeatherRepositoryImpl(
     }.catch {
         emit(DataState.Error(it.message ?: ""))
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun cacheWeather(weather: Weather) {
+        localDataSource.cacheWeather(weather)
+    }
+
+    override suspend fun getCachedWeather(): Weather? {
+        return localDataSource.getWeather()
+    }
 }

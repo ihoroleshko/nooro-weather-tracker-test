@@ -7,4 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherRepository {
 
     suspend fun getWeather(city: String): Flow<DataState<Weather>>
+
+    suspend fun cacheWeather(weather: Weather)
+
+    suspend fun getCachedWeather(): Weather?
 }
