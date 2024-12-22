@@ -1,5 +1,6 @@
 package com.test.nooro.weathertracker.ui.screens.home
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.test.nooro.domain.model.DataState
@@ -17,9 +18,17 @@ class HomeViewModel(
     private val _weather = MutableStateFlow<DataState<Weather>>(DataState.Idle())
     val weather = _weather.asStateFlow()
 
+    var savedWeather = mutableStateOf<Weather?>(null)
+        private set
+
     fun getWeather(city: String) {
+        savedWeather.value = null
         viewModelScope.launch {
             weatherUseCase.execute(city).collectLatest(_weather::value::set)
         }
+    }
+
+    fun saveWeather(weather: Weather) {
+        savedWeather.value = weather
     }
 }

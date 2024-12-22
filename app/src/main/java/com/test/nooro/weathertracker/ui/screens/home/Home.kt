@@ -2,6 +2,7 @@ package com.test.nooro.weathertracker.ui.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ import com.test.nooro.domain.model.DataState
 import com.test.nooro.domain.model.Weather
 import com.test.nooro.weathertracker.R
 import com.test.nooro.weathertracker.ui.theme.Black
+import com.test.nooro.weathertracker.ui.theme.DarkGray
 import com.test.nooro.weathertracker.ui.theme.Gray
 import com.test.nooro.weathertracker.ui.theme.Teal
 import org.koin.androidx.compose.koinViewModel
@@ -48,6 +50,7 @@ fun Home(
 ) {
     var city by rememberSaveable { mutableStateOf("") }
     val weather by viewModel.weather.collectAsState()
+    var savedWeather = viewModel.savedWeather
 
     Column(modifier = Modifier.fillMaxSize()) {
         TextField(modifier = Modifier
@@ -82,21 +85,26 @@ fun Home(
                     tint = Gray
                 )
             })
-        when (weather) {
-            is DataState.Idle -> {
+        val savedWeather = savedWeather.value
+        when {
+            savedWeather != null -> {
+                SavedWeatherCard(savedWeather)
+            }
+
+            weather is DataState.Idle -> {
                 NoCitySelected()
             }
 
-            is DataState.Loading -> {
+            weather is DataState.Loading -> {
                 // handle loading here, no design provided
             }
 
-            is DataState.Success -> {
+            weather is DataState.Success -> {
                 val weather = weather as DataState.Success
                 SearchWeatherCard(weather.data)
             }
 
-            is DataState.Error -> {
+            weather is DataState.Error -> {
                 // handle error here, no design provided
             }
         }
@@ -128,15 +136,18 @@ fun NoCitySelected() {
 }
 
 @Composable
-fun SearchWeatherCard(weather: Weather) {
+fun SearchWeatherCard(weather: Weather, viewModel: HomeViewModel = koinViewModel()) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                viewModel.saveWeather(weather)
+            }
             .padding(horizontal = 20.dp, vertical = 30.dp)
             .background(color = Teal, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 30.dp, vertical = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(verticalArrangement = Arrangement.Center) {
             Text(
@@ -148,7 +159,7 @@ fun SearchWeatherCard(weather: Weather) {
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = weather.temperature.roundToInt().toString(),
+                text = weather.temperature.roundToInt().toString() + "°",
                 fontSize = 50.sp,
                 color = Black,
                 lineHeight = 50.sp,
@@ -159,6 +170,76 @@ fun SearchWeatherCard(weather: Weather) {
             painter = rememberAsyncImagePainter("https://" + weather.weatherIconUrl),
             contentDescription = null,
             modifier = Modifier.size(80.dp)
+        )
+    }
+}
+
+@Composable
+fun SavedWeatherCard(weather: Weather) {
+    Column(
+        modifier = Modifier
+            .padding(top = 50.dp)
+            .padding(horizontal = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter("https://" + weather.weatherIconUrl),
+            contentDescription = null,
+            modifier = Modifier.size(120.dp)
+        )
+        Text(
+            text = weather.city,
+            fontSize = 30.sp,
+            color = Black,
+            lineHeight = 45.sp,
+            fontWeight = FontWeight(600)
+        )
+        Text(
+            text = weather.temperature.roundToInt().toString() + "°",
+            fontSize = 70.sp,
+            color = Black,
+            lineHeight = 105.sp,
+            fontWeight = FontWeight(500)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp)
+                .background(color = Teal, shape = RoundedCornerShape(16.dp))
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            WeatherDetail(stringResource(R.string.humidity), weather.humidity.toString() + "%")
+            WeatherDetail(stringResource(R.string.uv), weather.uvIndex.roundToInt().toString())
+            WeatherDetail(
+                stringResource(R.string.feels_like),
+                weather.feelsLikeFahrenheit.roundToInt().toString() + "°"
+            )
+        }
+    }
+}
+
+@Composable
+fun WeatherDetail(
+    title: String, value: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            fontSize = 12.sp,
+            color = Gray,
+            lineHeight = 18.sp,
+            fontWeight = FontWeight(500)
+        )
+        Text(
+            text = value,
+            fontSize = 15.sp,
+            color = DarkGray,
+            lineHeight = 22.sp,
+            fontWeight = FontWeight(500)
         )
     }
 }
