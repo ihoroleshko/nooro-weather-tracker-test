@@ -10,6 +10,7 @@ import com.test.nooro.data.datasource.LocalWeatherDataSource
 import com.test.nooro.data.datasource.RemoteWeatherDataSource
 import com.test.nooro.data.network.Api
 import com.test.nooro.data.preferences.DataStoreManager
+import com.test.nooro.data.repository.NetworkRepository
 import com.test.nooro.data.repository.WeatherRepositoryImpl
 import com.test.nooro.domain.core.ConfigProvider
 import com.test.nooro.domain.core.WeatherRepository
@@ -62,4 +63,5 @@ val dataModule = module {
     singleOf(::DataStoreManager)
     singleOf(::RemoteWeatherDataSource)
     singleOf(::LocalWeatherDataSource)
+    singleOf(::NetworkRepository)
 }

@@ -3,10 +3,11 @@ package com.test.nooro.weathertracker.ui.screens.home
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.test.nooro.data.repository.NetworkRepository
 import com.test.nooro.domain.model.DataState
 import com.test.nooro.domain.model.Weather
-import com.test.nooro.domain.usecase.GetCachedWeatherUseCase
 import com.test.nooro.domain.usecase.CacheWeatherUseCase
+import com.test.nooro.domain.usecase.GetCachedWeatherUseCase
 import com.test.nooro.domain.usecase.WeatherUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +18,7 @@ class HomeViewModel(
     private val weatherUseCase: WeatherUseCase,
     private val cacheWeatherUseCase: CacheWeatherUseCase,
     private val getCachedWeatherUseCase: GetCachedWeatherUseCase,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
 
     private val _weather = MutableStateFlow<DataState<Weather>>(DataState.Idle())
@@ -41,8 +43,16 @@ class HomeViewModel(
 
     fun updateCachedWeather() {
         viewModelScope.launch {
-            val cachedWeather = getCachedWeatherUseCase.execute()
-            if (cachedWeather != null) {
+            val cachedWeather = getCachedWeatherUseCase.execute() ?: return@launch
+            if (networkRepository.isNetworkAvailable()) {
+                weatherUseCase.execute(cachedWeather.city).collectLatest {
+                    if (it is DataState.Success) {
+                        savedWeather.value = it.data
+                    } else {
+                        savedWeather.value = cachedWeather
+                    }
+                }
+            } else {
                 savedWeather.value = cachedWeather
             }
         }
