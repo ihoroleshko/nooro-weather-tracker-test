@@ -13,3 +13,15 @@ kotlin {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }
+
+dependencies {
+
+    implementation(libs.koin.core)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.moshi)
+    implementation(libs.moshi.converter)
+    implementation(libs.retrofit)
+
+    implementation(project(":domain"))
+}
