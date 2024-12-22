@@ -3,6 +3,7 @@ package com.test.nooro.data.di
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.test.nooro.data.network.Api
+import com.test.nooro.domain.core.ConfigProvider
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.dsl.singleOf
@@ -29,8 +30,10 @@ fun provideConverterFactory(): MoshiConverterFactory {
 }
 
 fun provideRetrofit(
-    httpClient: OkHttpClient, converterFactory: MoshiConverterFactory
-): Retrofit = Retrofit.Builder().baseUrl("").client(httpClient)
+    configProvider: ConfigProvider,
+    httpClient: OkHttpClient,
+    converterFactory: MoshiConverterFactory
+): Retrofit = Retrofit.Builder().baseUrl(configProvider.getBaseUrl()).client(httpClient)
     .addConverterFactory(converterFactory).build()
 
 fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)

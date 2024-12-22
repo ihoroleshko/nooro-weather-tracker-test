@@ -22,4 +22,6 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.converter)
     implementation(libs.retrofit)
+
+    implementation(project(":domain"))
 }
