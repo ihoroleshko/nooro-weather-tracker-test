@@ -8,6 +8,7 @@ import com.test.nooro.domain.core.ConfigProvider
 import com.test.nooro.domain.core.WeatherRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -45,5 +46,5 @@ val dataModule = module {
     singleOf(::provideConverterFactory)
     singleOf(::provideRetrofit)
     singleOf(::provideApi)
-    single<WeatherRepository> { WeatherRepositoryImpl(get(), get()) }
+    singleOf(::WeatherRepositoryImpl) { bind<WeatherRepository>() }
 }
