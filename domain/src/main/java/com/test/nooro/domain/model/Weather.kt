@@ -5,6 +5,6 @@ data class Weather(
     val temperature: Float,
     val weatherIconUrl: String,
     val humidity: Int,
-    val uvIndex: Int,
+    val uvIndex: Float,
     val feelsLikeFahrenheit: Float
 )
