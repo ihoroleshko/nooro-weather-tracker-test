@@ -21,6 +21,7 @@ moshiConverter = "2.11.0"
 retrofit = "2.11.0"
 coroutines = "1.9.0"
 coil = "2.7.0"
+dataStore = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,11 +47,11 @@ moshi-converter = { group = "com.squareup.retrofit2", name = "converter-moshi", 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-
-
+data-store = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+android-library = { id = "com.android.library", version.ref = "agp" }
