@@ -3,7 +3,9 @@ package com.test.nooro.data.di
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.test.nooro.data.network.Api
+import com.test.nooro.data.repository.WeatherRepositoryImpl
 import com.test.nooro.domain.core.ConfigProvider
+import com.test.nooro.domain.core.WeatherRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.dsl.singleOf
@@ -43,4 +45,5 @@ val dataModule = module {
     singleOf(::provideConverterFactory)
     singleOf(::provideRetrofit)
     singleOf(::provideApi)
+    single<WeatherRepository> { WeatherRepositoryImpl(get(), get()) }
 }
